@@ -14,7 +14,7 @@ import org.cash.count.constant.AccountType;
  */
 public class Account {
     private BigDecimal balance;
-    private AccountType type;
+    private AccountType increasedBy;
 
     public BigDecimal getBalance() {
         return balance;
@@ -24,11 +24,11 @@ public class Account {
         this.balance = balance;
     }
 
-    public AccountType getType() {
-        return type;
+    public AccountType getIncreasedBy() {
+        return increasedBy;
     }
 
-    public void setType(AccountType type) {
-        this.type = type;
+    public void setIncreasedBy(AccountType increasedBy) {
+        this.increasedBy = increasedBy;
     }
 }

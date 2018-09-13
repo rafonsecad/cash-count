@@ -11,5 +11,12 @@ package org.cash.count.service;
  */
 public interface ITransferService {
     
-    void transfer (int debitAccountId, int creditAccountId, String value);
+    /**
+     * Transfer between accounts
+     * 
+     * @param debitAccountId the id of the account to be debited
+     * @param creditAccountId the id of the account to be credited
+     * @param amount the transfer amount
+     */
+    void transfer (int debitAccountId, int creditAccountId, String amount);
 }
