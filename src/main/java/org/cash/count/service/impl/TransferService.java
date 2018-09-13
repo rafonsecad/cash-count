@@ -35,19 +35,8 @@ public class TransferService implements ITransferService{
         Account debitedAccount = debitedAccountWrapper.orElseThrow(IllegalStateException::new);
         Account creditedAccount = creditedAccountWrapper.orElseThrow(IllegalStateException::new);
         
-        BigDecimal debitedAccountBalance = debitedAccount.getBalance();
-        if (debitedAccount.getIncreasedBy() == AccountType.DEBIT){
-            debitedAccountBalance = debitedAccountBalance.add(new BigDecimal(amount));
-        } else{
-            debitedAccountBalance = debitedAccountBalance.subtract(new BigDecimal(amount));
-        }
-        
-        BigDecimal creditedAccountBalance = creditedAccount.getBalance();
-        if (creditedAccount.getIncreasedBy() == AccountType.CREDIT){
-            creditedAccountBalance = creditedAccountBalance.add(new BigDecimal(amount));
-        } else{
-            creditedAccountBalance = creditedAccountBalance.subtract(new BigDecimal(amount));
-        }
+        BigDecimal debitedAccountBalance = calculateDebitedBalance(debitedAccount, amount);
+        BigDecimal creditedAccountBalance = calculateCreditedBalance(creditedAccount, amount);
         
         debitedAccount.setBalance(debitedAccountBalance);
         creditedAccount.setBalance(creditedAccountBalance);
@@ -56,4 +45,21 @@ public class TransferService implements ITransferService{
         accountRepository.save(creditedAccount);
     }
     
+    private BigDecimal calculateDebitedBalance(Account debitedAccount, String amount){
+        
+        BigDecimal debitedAccountBalance = new BigDecimal(debitedAccount.getBalance().toString());
+        if (debitedAccount.getIncreasedBy() == AccountType.DEBIT){
+            return debitedAccountBalance.add(new BigDecimal(amount));
+        } 
+        return debitedAccountBalance.subtract(new BigDecimal(amount));
+    }
+    
+    private BigDecimal calculateCreditedBalance(Account creditedAccount, String amount){
+        
+        BigDecimal creditedAccountBalance = new BigDecimal(creditedAccount.getBalance().toString());
+        if (creditedAccount.getIncreasedBy() == AccountType.CREDIT){
+            return creditedAccountBalance.add(new BigDecimal(amount));
+        } 
+        return creditedAccountBalance.subtract(new BigDecimal(amount));
+    }
 }
