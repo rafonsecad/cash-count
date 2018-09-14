@@ -6,6 +6,7 @@
 package org.cash.count.service.impl;
 
 import java.math.BigDecimal;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.cash.count.constant.AccountType;
 import org.cash.count.model.Account;
@@ -20,6 +21,11 @@ public class TransferService implements ITransferService{
 
     private AccountRepository accountRepository;
     
+    /**
+     * Public constructor
+     * 
+     * @param accountRepository the account repository dependency
+     */
     public TransferService(AccountRepository accountRepository){
         this.accountRepository = accountRepository;
     }
@@ -32,8 +38,8 @@ public class TransferService implements ITransferService{
         Optional<Account> debitedAccountWrapper = accountRepository.findById(debitAccountId);
         Optional<Account> creditedAccountWrapper = accountRepository.findById(creditAccountId);
         
-        Account debitedAccount = debitedAccountWrapper.orElseThrow(IllegalStateException::new);
-        Account creditedAccount = creditedAccountWrapper.orElseThrow(IllegalStateException::new);
+        Account debitedAccount = debitedAccountWrapper.orElseThrow(NoSuchElementException::new);
+        Account creditedAccount = creditedAccountWrapper.orElseThrow(NoSuchElementException::new);
         
         BigDecimal debitedAccountBalance = calculateDebitedBalance(debitedAccount, amount);
         BigDecimal creditedAccountBalance = calculateCreditedBalance(creditedAccount, amount);

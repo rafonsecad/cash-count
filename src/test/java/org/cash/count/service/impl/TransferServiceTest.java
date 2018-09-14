@@ -7,11 +7,13 @@ package org.cash.count.service.impl;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import org.cash.count.constant.AccountType;
 import org.cash.count.model.Account;
 import org.cash.count.repository.AccountRepository;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -37,6 +39,14 @@ public class TransferServiceTest {
     
     @Captor
     private ArgumentCaptor<Account> accountCaptor;
+    
+    /**
+     * Initialize class.
+     */
+    @Before
+    public void setUp(){
+        transferService = new TransferService(accountRepository);
+    }
     
     /**
      * Should increase the amount for both accounts.
@@ -67,7 +77,6 @@ public class TransferServiceTest {
                 .thenReturn(resultingDebitAccount)
                 .thenReturn(resultingCreditAccount);
         
-        transferService = new TransferService(accountRepository);
         transferService.transfer(1, 3, "10000");
         
         verify(accountRepository, times(2)).save(accountCaptor.capture());
@@ -114,7 +123,6 @@ public class TransferServiceTest {
                 .thenReturn(resultingDebitAccount)
                 .thenReturn(resultingCreditAccount);
         
-        transferService = new TransferService(accountRepository);
         transferService.transfer(5, 2, "500");
         
         verify(accountRepository, times(2)).save(accountCaptor.capture());
@@ -162,7 +170,6 @@ public class TransferServiceTest {
                 .thenReturn(resultingEquipmentAccount)
                 .thenReturn(resultingCashAccount);
         
-        transferService = new TransferService(accountRepository);
         transferService.transfer(2, 5, "1000");
         
         verify(accountRepository, times(2)).save(accountCaptor.capture());
@@ -178,5 +185,29 @@ public class TransferServiceTest {
         assertThat(creditedAccountCaptured).isNotNull();
         assertThat(creditedAccountCaptured.getIncreasedBy()).isEqualTo(resultingCashAccount.getIncreasedBy());
         assertThat(creditedAccountCaptured.getBalance()).isEqualTo(resultingCashAccount.getBalance());
+    }
+    
+    /**
+     * Should thrown exception when the account does not exist.
+     */
+    @Test(expected = NoSuchElementException.class)
+    public void shouldThrownException_debitedAccountNotFound(){
+        
+        when(accountRepository.findById(323)).thenReturn(Optional.empty());
+        when(accountRepository.findById(2)).thenReturn(Optional.of(new Account()));
+        
+        transferService.transfer(323, 2, "100");
+    }
+    
+    /**
+     * Should thrown exception when the account does not exist.
+     */
+    @Test(expected = NoSuchElementException.class)
+    public void shouldThrownException_creditedAccountNotFound(){
+        
+        when(accountRepository.findById(323)).thenReturn(Optional.empty());
+        when(accountRepository.findById(2)).thenReturn(Optional.of(new Account()));
+        
+        transferService.transfer(2, 323, "100");
     }
 }

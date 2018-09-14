@@ -13,9 +13,19 @@ import org.cash.count.constant.AccountType;
  * @author rafael
  */
 public class Account {
+    
+    private int id;
     private BigDecimal balance;
     private AccountType increasedBy;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+    
     public BigDecimal getBalance() {
         return balance;
     }
