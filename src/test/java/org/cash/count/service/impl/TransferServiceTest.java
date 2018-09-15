@@ -26,7 +26,8 @@ import static org.mockito.Mockito.when;
 import org.mockito.junit.MockitoJUnitRunner;
 
 /**
- *
+ * {@link org.cash.count.service.impl.TransferService} unit tests
+ * 
  * @author rafael
  */
 @RunWith(MockitoJUnitRunner.class)

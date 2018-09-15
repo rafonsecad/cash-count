@@ -6,7 +6,8 @@
 package org.cash.count.service;
 
 /**
- *
+ * Account transfer service
+ * 
  * @author rafael
  */
 public interface ITransferService {
