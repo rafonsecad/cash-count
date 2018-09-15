@@ -2,9 +2,4 @@
 ---
 language: java
 sudo: false
-
-jobs:
-    include:
-        -stage: test
-        jdk: openjdk8
-        script: mvn test
+jdk: openjdk8
