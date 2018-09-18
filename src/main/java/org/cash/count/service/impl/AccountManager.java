@@ -8,7 +8,6 @@ package org.cash.count.service.impl;
 import java.math.BigDecimal;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import org.cash.count.constant.AccountType;
 import org.cash.count.dto.AccountDto;
 import org.cash.count.model.Account;
 import org.cash.count.repository.AccountRepository;
@@ -33,9 +32,15 @@ public class AccountManager implements IAccountManager {
 
     @Override
     public void create(AccountDto account) {
+        
+        if (account.getId() == 0){
+            throw new NoSuchElementException();
+        }
+        if (account.getName() == null){
+            throw new NoSuchElementException("Missing Account Name");
+        }
         Optional<Account> parentAccountWrapper = accountRepository
                             .findById(account.getParentId());
-        
         Account parentAccount = parentAccountWrapper.orElseThrow(NoSuchElementException::new);
         
         Account accountEntity = new Account();
