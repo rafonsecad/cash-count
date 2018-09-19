@@ -34,10 +34,14 @@ public class AccountManager implements IAccountManager {
     public void create(AccountDto account) {
         
         if (account.getId() == 0){
-            throw new NoSuchElementException();
+            throw new NoSuchElementException("Missing Account Id");
         }
-        if (account.getName() == null){
+        
+        if (!hasAccountName(account)){
             throw new NoSuchElementException("Missing Account Name");
+        }
+        if (account.getParentId() == 0){
+            throw new NoSuchElementException("Missing Parent Account Id");
         }
         Optional<Account> parentAccountWrapper = accountRepository
                             .findById(account.getParentId());
@@ -54,6 +58,12 @@ public class AccountManager implements IAccountManager {
         accountRepository.save(accountEntity);
     }
 
+    private boolean hasAccountName(AccountDto account){
+        return Optional.of(account)
+                .map(AccountDto::getName)
+                .isPresent();
+    }
+    
     @Override
     public AccountDto findById(int accountId) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

@@ -13,11 +13,16 @@ import org.cash.count.constant.AccountType;
 import org.cash.count.dto.AccountDto;
 import org.cash.count.model.Account;
 import org.cash.count.repository.AccountRepository;
+import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import static org.mockito.ArgumentMatchers.any;
+import org.mockito.Captor;
 import org.mockito.Mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -34,6 +39,9 @@ public class AccountManagerTest {
     
     @Mock
     private AccountRepository accountRepository;
+    
+    @Captor
+    private ArgumentCaptor<Account> accountCaptor;
     
     /**
      * Initialize class
@@ -71,23 +79,28 @@ public class AccountManagerTest {
         
         accountManager.create(account);
         
+        verify(accountRepository, times(1)).save(accountCaptor.capture());
+        
+        Account capturedAccount = accountCaptor.getValue();
+        assertThat(capturedAccount.getBalance()).isEqualTo(savedAccount.getBalance());
     }
     
     /**
      * should not create the account. the id is missing or cannot be zero
      */
-    @Test(expected = NoSuchElementException.class)
+    @Test
     public void shouldNotCreateAccount_missingId(){
         AccountDto account = new AccountDto();
         account.setName("New Account");
         account.setDescription("Any Description");
         account.setParentId(1);
         
-        Account parentAccount = new Account();
-        parentAccount.setId(1);
-        parentAccount.setIncreasedBy(AccountType.CREDIT);
-        
-        accountManager.create(account);
+        try{
+            accountManager.create(account);
+            fail();
+        } catch(NoSuchElementException e){
+            assertThat(e.getMessage()).isEqualTo("Missing Account Id");
+        }
         
         verifyZeroInteractions(accountRepository);
     }
@@ -102,14 +115,31 @@ public class AccountManagerTest {
         account.setDescription("Any Description");
         account.setParentId(1);
         
-        Account parentAccount = new Account();
-        parentAccount.setId(1);
-        parentAccount.setIncreasedBy(AccountType.CREDIT);
+        try{
+            accountManager.create(account);
+            fail();
+        } catch(NoSuchElementException e){
+            assertThat(e.getMessage()).isEqualTo("Missing Account Name");
+        }
+        
+        verifyZeroInteractions(accountRepository);
+    }
+    
+    /**
+     * Should not create account. Missing parent account id
+     */
+    @Test
+    public void shouldNotCreateAccount_missingParentAccountId(){
+        AccountDto account = new AccountDto();
+        account.setId(23);
+        account.setName("New Account");
+        account.setDescription("Any Description");
         
         try{
             accountManager.create(account);
+            fail();
         } catch(NoSuchElementException e){
-            assertThat(e.getMessage()).isEqualTo("Missing Account Name");
+            assertThat(e.getMessage()).isEqualTo("Missing Parent Account Id");
         }
         
         verifyZeroInteractions(accountRepository);
