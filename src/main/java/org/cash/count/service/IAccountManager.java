@@ -5,6 +5,7 @@
  */
 package org.cash.count.service;
 
+import org.cash.count.dto.AccountCreationDto;
 import org.cash.count.dto.AccountDto;
 
 /**
@@ -19,7 +20,7 @@ public interface IAccountManager {
      * 
      * @param account 
      */
-    public void create(AccountDto account);
+    public void create(AccountCreationDto account);
     
     /**
      * Find an account by id.
@@ -34,7 +35,7 @@ public interface IAccountManager {
      * 
      * @param account 
      */
-    public void update(AccountDto account);
+    public void update(AccountCreationDto account);
     
     
     /**

@@ -8,6 +8,7 @@ package org.cash.count.service.impl;
 import java.math.BigDecimal;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import org.cash.count.dto.AccountCreationDto;
 import org.cash.count.dto.AccountDto;
 import org.cash.count.model.Account;
 import org.cash.count.repository.AccountRepository;
@@ -30,13 +31,15 @@ public class AccountManager implements IAccountManager {
         this.accountRepository = accountRepository;
     }
 
+    /**
+     * @see org.cash.count.service.IAccountManager#create(org.cash.count.dto.AccountDto) 
+     */
     @Override
-    public void create(AccountDto account) {
+    public void create(AccountCreationDto account) {
         
         if (account.getId() == 0){
             throw new NoSuchElementException("Missing Account Id");
         }
-        
         if (!hasAccountName(account)){
             throw new NoSuchElementException("Missing Account Name");
         }
@@ -58,19 +61,30 @@ public class AccountManager implements IAccountManager {
         accountRepository.save(accountEntity);
     }
 
-    private boolean hasAccountName(AccountDto account){
+    private boolean hasAccountName(AccountCreationDto account){
         return Optional.of(account)
-                .map(AccountDto::getName)
+                .map(AccountCreationDto::getName)
                 .isPresent();
     }
     
+    /**
+     * @see org.cash.count.service.IAccountManager#findById(int)
+     */
     @Override
     public AccountDto findById(int accountId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Optional<Account> accountWrapped = accountRepository.findById(accountId);
+        Account account = accountWrapped.orElseThrow(NoSuchElementException::new);
+        AccountDto accountDto = new AccountDto();
+        accountDto.setId(account.getId());
+        accountDto.setName(account.getName());
+        accountDto.setDescription(account.getDescription());
+        accountDto.setParentId(account.getParentId());
+        accountDto.setBalance(account.getBalance());
+        return accountDto;
     }
 
     @Override
-    public void update(AccountDto account) {
+    public void update(AccountCreationDto account) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

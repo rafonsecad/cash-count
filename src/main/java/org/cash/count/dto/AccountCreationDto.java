@@ -5,19 +5,16 @@
  */
 package org.cash.count.dto;
 
-import java.math.BigDecimal;
-
 /**
  *
  * @author rafael
  */
-public class AccountDto {
+public class AccountCreationDto {
     
     private int id;
     private String name;
     private String description;
     private int parentId;
-    private BigDecimal balance;
 
     public int getId() {
         return id;
@@ -49,13 +46,5 @@ public class AccountDto {
 
     public void setParentId(int parentId) {
         this.parentId = parentId;
-    }
-
-    public BigDecimal getBalance() {
-        return balance;
-    }
-
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
     }
 }

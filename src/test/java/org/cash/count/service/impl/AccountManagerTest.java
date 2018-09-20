@@ -10,6 +10,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import org.cash.count.constant.AccountType;
+import org.cash.count.dto.AccountCreationDto;
 import org.cash.count.dto.AccountDto;
 import org.cash.count.model.Account;
 import org.cash.count.repository.AccountRepository;
@@ -56,7 +57,7 @@ public class AccountManagerTest {
      */
     @Test
     public void shouldCreateAccount_hasRequiredFields(){
-        AccountDto account = new AccountDto();
+        AccountCreationDto account = new AccountCreationDto();
         account.setId(23);
         account.setName("New Account");
         account.setDescription("Any Description");
@@ -82,7 +83,7 @@ public class AccountManagerTest {
         verify(accountRepository, times(1)).save(accountCaptor.capture());
         
         Account capturedAccount = accountCaptor.getValue();
-        assertThat(capturedAccount.getBalance()).isEqualTo(savedAccount.getBalance());
+        assertThat(capturedAccount.getBalance()).isEqualTo(BigDecimal.ZERO);
     }
     
     /**
@@ -90,7 +91,7 @@ public class AccountManagerTest {
      */
     @Test
     public void shouldNotCreateAccount_missingId(){
-        AccountDto account = new AccountDto();
+        AccountCreationDto account = new AccountCreationDto();
         account.setName("New Account");
         account.setDescription("Any Description");
         account.setParentId(1);
@@ -110,7 +111,7 @@ public class AccountManagerTest {
      */
     @Test
     public void shouldNotCreateAccount_missingName(){
-        AccountDto account = new AccountDto();
+        AccountCreationDto account = new AccountCreationDto();
         account.setId(23);
         account.setDescription("Any Description");
         account.setParentId(1);
@@ -130,7 +131,7 @@ public class AccountManagerTest {
      */
     @Test
     public void shouldNotCreateAccount_missingParentAccountId(){
-        AccountDto account = new AccountDto();
+        AccountCreationDto account = new AccountCreationDto();
         account.setId(23);
         account.setName("New Account");
         account.setDescription("Any Description");
@@ -143,5 +144,53 @@ public class AccountManagerTest {
         }
         
         verifyZeroInteractions(accountRepository);
+    }
+    
+    /**
+     * Should not create account. parent account not found
+     */
+    @Test(expected = NoSuchElementException.class)
+    public void shouldNotCreateAccount_parentAccountNotFound(){
+        AccountCreationDto account = new AccountCreationDto();
+        account.setId(23);
+        account.setName("New Account");
+        account.setDescription("Any Description");
+        account.setParentId(1);
+        
+        when(accountRepository.findById(1)).thenReturn(Optional.empty());
+        
+        accountManager.create(account);
+    }
+    
+    /**
+     * Should find account by id
+     */
+    @Test
+    public void shouldFindById_successfulBehaviour(){
+        Account accountStored = new Account();
+        accountStored.setId(34);
+        accountStored.setName("Name of the account");
+        accountStored.setDescription("Description");
+        accountStored.setParentId(4);
+        accountStored.setBalance(new BigDecimal("4000"));
+        
+        when(accountRepository.findById(34)).thenReturn(Optional.of(accountStored));
+        
+        AccountDto accountFound = accountManager.findById(34);
+        
+        assertThat(accountFound.getId()).isEqualTo(34);
+        assertThat(accountFound.getName()).isEqualTo("Name of the account");
+        assertThat(accountFound.getDescription()).isEqualTo("Description");
+        assertThat(accountFound.getParentId()).isEqualTo(4);
+        assertThat(accountFound.getBalance()).isEqualTo(new BigDecimal(4000));
+    }
+    
+    /**
+     * Should throw exception. Account not found
+     */
+    @Test(expected=NoSuchElementException.class)
+    public void shouldFindById_accountNotFound(){
+        when(accountRepository.findById(0)).thenReturn(Optional.empty());
+        accountManager.findById(0);
     }
 }
