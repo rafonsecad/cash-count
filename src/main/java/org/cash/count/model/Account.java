@@ -20,6 +20,7 @@ public class Account {
     private BigDecimal balance;
     private AccountType increasedBy;
     private int parentId;
+    private boolean disabled;
 
     public int getId() {
         return id;
@@ -67,5 +68,13 @@ public class Account {
 
     public void setParentId(int parentId) {
         this.parentId = parentId;
+    }
+
+    public boolean isDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
     }
 }

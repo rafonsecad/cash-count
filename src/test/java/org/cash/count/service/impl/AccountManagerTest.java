@@ -12,6 +12,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import org.cash.count.constant.AccountType;
 import org.cash.count.dto.AccountCreationDto;
 import org.cash.count.dto.AccountDto;
+import org.cash.count.dto.AccountUpdatedDto;
 import org.cash.count.model.Account;
 import org.cash.count.repository.AccountRepository;
 import static org.junit.Assert.fail;
@@ -167,22 +168,22 @@ public class AccountManagerTest {
      */
     @Test
     public void shouldFindById_successfulBehaviour(){
-        Account accountStored = new Account();
-        accountStored.setId(34);
-        accountStored.setName("Name of the account");
-        accountStored.setDescription("Description");
-        accountStored.setParentId(4);
-        accountStored.setBalance(new BigDecimal("4000"));
+        Account storedAccount = new Account();
+        storedAccount.setId(34);
+        storedAccount.setName("Name of the account");
+        storedAccount.setDescription("Description");
+        storedAccount.setParentId(4);
+        storedAccount.setBalance(new BigDecimal("4000"));
         
-        when(accountRepository.findById(34)).thenReturn(Optional.of(accountStored));
+        when(accountRepository.findById(34)).thenReturn(Optional.of(storedAccount));
         
-        AccountDto accountFound = accountManager.findById(34);
+        AccountDto foundAccount = accountManager.findById(34);
         
-        assertThat(accountFound.getId()).isEqualTo(34);
-        assertThat(accountFound.getName()).isEqualTo("Name of the account");
-        assertThat(accountFound.getDescription()).isEqualTo("Description");
-        assertThat(accountFound.getParentId()).isEqualTo(4);
-        assertThat(accountFound.getBalance()).isEqualTo(new BigDecimal(4000));
+        assertThat(foundAccount.getId()).isEqualTo(34);
+        assertThat(foundAccount.getName()).isEqualTo("Name of the account");
+        assertThat(foundAccount.getDescription()).isEqualTo("Description");
+        assertThat(foundAccount.getParentId()).isEqualTo(4);
+        assertThat(foundAccount.getBalance()).isEqualTo(new BigDecimal(4000));
     }
     
     /**
@@ -192,5 +193,73 @@ public class AccountManagerTest {
     public void shouldFindById_accountNotFound(){
         when(accountRepository.findById(0)).thenReturn(Optional.empty());
         accountManager.findById(0);
+    }
+    
+    @Test
+    public void shouldUpdateAccount_successfulBehaviour(){
+        AccountUpdatedDto dto = new AccountUpdatedDto();
+        dto.setId(1);
+        dto.setName("Name Updated");
+        dto.setDescription("new description");
+        
+        Account foundAccount = new Account();
+        foundAccount.setId(1);
+        foundAccount.setName("Old Name");
+        foundAccount.setDescription("Old Description");
+        foundAccount.setBalance(new BigDecimal("3400"));
+        
+        Account storedAccount = new Account();
+        storedAccount.setId(1);
+        storedAccount.setName("Name Updated");
+        storedAccount.setDescription("new description");
+        storedAccount.setBalance(new BigDecimal("3400"));
+        
+        when(accountRepository.findById(1)).thenReturn(Optional.of(foundAccount));
+        when(accountRepository.save(any())).thenReturn(storedAccount);
+        
+        accountManager.update(dto);
+        
+        verify(accountRepository, times(1)).save(accountCaptor.capture());
+        
+        Account capturedAccount = accountCaptor.getValue();
+        assertThat(capturedAccount.getId()).isEqualTo(storedAccount.getId());
+        assertThat(capturedAccount.getName()).isEqualTo(storedAccount.getName());
+        assertThat(capturedAccount.getDescription()).isEqualTo(storedAccount.getDescription());
+        assertThat(capturedAccount.getBalance()).isEqualTo(storedAccount.getBalance());
+    }
+    
+    @Test
+    public void shouldNotUpdateAccount_MissingName(){
+        AccountUpdatedDto dto = new AccountUpdatedDto();
+        dto.setId(1);
+        dto.setDescription("new description");
+        
+        try{
+            accountManager.update(dto);
+            fail();
+        } catch(NoSuchElementException e){
+            assertThat(e.getMessage()).isEqualTo("Missing account name");
+        }
+    }
+    
+    @Test
+    public void shouldDisableAccount_successfulBehaviour(){
+        Account account = new Account();
+        account.setId(5);
+        account.setDisabled(false);
+        
+        Account storedAccount = new Account();
+        storedAccount.setId(5);
+        storedAccount.setDisabled(true);
+        
+        when(accountRepository.findById(5)).thenReturn(Optional.of(account));
+        when(accountRepository.save(any())).thenReturn(storedAccount);
+        
+        accountManager.disable(5);
+        
+        verify(accountRepository).save(accountCaptor.capture());
+        
+        Account capturedAccount = accountCaptor.getValue();
+        assertThat(capturedAccount.isDisabled()).isEqualTo(storedAccount.isDisabled());
     }
 }

@@ -10,6 +10,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.cash.count.dto.AccountCreationDto;
 import org.cash.count.dto.AccountDto;
+import org.cash.count.dto.AccountUpdatedDto;
 import org.cash.count.model.Account;
 import org.cash.count.repository.AccountRepository;
 import org.cash.count.service.IAccountManager;
@@ -40,7 +41,7 @@ public class AccountManager implements IAccountManager {
         if (account.getId() == 0){
             throw new NoSuchElementException("Missing Account Id");
         }
-        if (!hasAccountName(account)){
+        if (!hasAccountCreationName(account)){
             throw new NoSuchElementException("Missing Account Name");
         }
         if (account.getParentId() == 0){
@@ -61,7 +62,7 @@ public class AccountManager implements IAccountManager {
         accountRepository.save(accountEntity);
     }
 
-    private boolean hasAccountName(AccountCreationDto account){
+    private boolean hasAccountCreationName(AccountCreationDto account){
         return Optional.of(account)
                 .map(AccountCreationDto::getName)
                 .isPresent();
@@ -72,8 +73,8 @@ public class AccountManager implements IAccountManager {
      */
     @Override
     public AccountDto findById(int accountId) {
-        Optional<Account> accountWrapped = accountRepository.findById(accountId);
-        Account account = accountWrapped.orElseThrow(NoSuchElementException::new);
+        Optional<Account> wrappedAccount = accountRepository.findById(accountId);
+        Account account = wrappedAccount.orElseThrow(NoSuchElementException::new);
         AccountDto accountDto = new AccountDto();
         accountDto.setId(account.getId());
         accountDto.setName(account.getName());
@@ -83,13 +84,35 @@ public class AccountManager implements IAccountManager {
         return accountDto;
     }
 
+    /**
+     * @see org.cash.count.service.IAccountManager#update(org.cash.count.dto.AccountUpdatedDto) 
+     */
     @Override
-    public void update(AccountCreationDto account) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void update(AccountUpdatedDto accountUpdated) {
+        if(!hasAccountUpdatedName(accountUpdated)){
+            throw new NoSuchElementException("Missing account name");
+        }
+        Optional<Account> wrappedAccount = accountRepository.findById(accountUpdated.getId());
+        Account account = wrappedAccount.orElseThrow(NoSuchElementException::new);
+        account.setName(accountUpdated.getName());
+        account.setDescription(accountUpdated.getDescription());
+        accountRepository.save(account);
     }
 
+    private boolean hasAccountUpdatedName(AccountUpdatedDto account){
+        return Optional.of(account)
+                .map(AccountUpdatedDto::getName)
+                .isPresent();
+    }
+    
+    /**
+     * @see org.cash.count.service.IAccountManager#disable(int) 
+     */
     @Override
     public void disable(int accountId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Optional<Account> wrappedAccount = accountRepository.findById(accountId);
+        Account account = wrappedAccount.orElseThrow(NoSuchElementException::new);
+        account.setDisabled(true);
+        accountRepository.save(account);
     }
 }

@@ -7,6 +7,7 @@ package org.cash.count.service;
 
 import org.cash.count.dto.AccountCreationDto;
 import org.cash.count.dto.AccountDto;
+import org.cash.count.dto.AccountUpdatedDto;
 
 /**
  * CRUD operations on accounts
@@ -35,7 +36,7 @@ public interface IAccountManager {
      * 
      * @param account 
      */
-    public void update(AccountCreationDto account);
+    public void update(AccountUpdatedDto account);
     
     
     /**
