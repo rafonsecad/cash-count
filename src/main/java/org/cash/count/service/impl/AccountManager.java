@@ -39,9 +39,6 @@ public class AccountManager implements IAccountManager {
     @Override
     public void create(AccountCreationDto account) {
         
-        if (account.getId() == 0){
-            throw new NoSuchElementException("Missing Account Id");
-        }
         if (!hasName(account)){
             throw new NoSuchElementException("Missing Account Name");
         }

@@ -59,7 +59,6 @@ public class AccountManagerTest {
     @Test
     public void shouldCreateAccount_hasRequiredFields(){
         AccountCreationDto account = new AccountCreationDto();
-        account.setId(23);
         account.setName("New Account");
         account.setDescription("Any Description");
         account.setParentId(1);
@@ -85,26 +84,6 @@ public class AccountManagerTest {
         
         Account capturedAccount = accountCaptor.getValue();
         assertThat(capturedAccount.getBalance()).isEqualTo(BigDecimal.ZERO);
-    }
-    
-    /**
-     * should not create the account. the id is missing or cannot be zero
-     */
-    @Test
-    public void shouldNotCreateAccount_missingId(){
-        AccountCreationDto account = new AccountCreationDto();
-        account.setName("New Account");
-        account.setDescription("Any Description");
-        account.setParentId(1);
-        
-        try{
-            accountManager.create(account);
-            fail();
-        } catch(NoSuchElementException e){
-            assertThat(e.getMessage()).isEqualTo("Missing Account Id");
-        }
-        
-        verifyZeroInteractions(accountRepository);
     }
     
     /**
