@@ -9,7 +9,7 @@ package org.cash.count.dto;
  *
  * @author rafael
  */
-public class AccountUpdatedDto {
+public class AccountUpdatedDto implements NameValidator {
     
     private int id;
     private String name;
@@ -23,6 +23,7 @@ public class AccountUpdatedDto {
         this.id = id;
     }
 
+    @Override
     public String getName() {
         return name;
     }

@@ -11,6 +11,7 @@ import java.util.Optional;
 import org.cash.count.dto.AccountCreationDto;
 import org.cash.count.dto.AccountDto;
 import org.cash.count.dto.AccountUpdatedDto;
+import org.cash.count.dto.NameValidator;
 import org.cash.count.model.Account;
 import org.cash.count.repository.AccountRepository;
 import org.cash.count.service.IAccountManager;
@@ -41,7 +42,7 @@ public class AccountManager implements IAccountManager {
         if (account.getId() == 0){
             throw new NoSuchElementException("Missing Account Id");
         }
-        if (!hasAccountCreationName(account)){
+        if (!hasName(account)){
             throw new NoSuchElementException("Missing Account Name");
         }
         if (account.getParentId() == 0){
@@ -62,9 +63,9 @@ public class AccountManager implements IAccountManager {
         accountRepository.save(accountEntity);
     }
 
-    private boolean hasAccountCreationName(AccountCreationDto account){
+    private boolean hasName(NameValidator account){
         return Optional.of(account)
-                .map(AccountCreationDto::getName)
+                .map(NameValidator::getName)
                 .isPresent();
     }
     
@@ -89,7 +90,7 @@ public class AccountManager implements IAccountManager {
      */
     @Override
     public void update(AccountUpdatedDto accountUpdated) {
-        if(!hasAccountUpdatedName(accountUpdated)){
+        if(!hasName(accountUpdated)){
             throw new NoSuchElementException("Missing account name");
         }
         Optional<Account> wrappedAccount = accountRepository.findById(accountUpdated.getId());
@@ -97,12 +98,6 @@ public class AccountManager implements IAccountManager {
         account.setName(accountUpdated.getName());
         account.setDescription(accountUpdated.getDescription());
         accountRepository.save(account);
-    }
-
-    private boolean hasAccountUpdatedName(AccountUpdatedDto account){
-        return Optional.of(account)
-                .map(AccountUpdatedDto::getName)
-                .isPresent();
     }
     
     /**

@@ -195,6 +195,9 @@ public class AccountManagerTest {
         accountManager.findById(0);
     }
     
+    /**
+     * Should update account successfully
+     */
     @Test
     public void shouldUpdateAccount_successfulBehaviour(){
         AccountUpdatedDto dto = new AccountUpdatedDto();
@@ -228,6 +231,9 @@ public class AccountManagerTest {
         assertThat(capturedAccount.getBalance()).isEqualTo(storedAccount.getBalance());
     }
     
+    /**
+     * Should not update account. Missing name
+     */
     @Test
     public void shouldNotUpdateAccount_MissingName(){
         AccountUpdatedDto dto = new AccountUpdatedDto();
@@ -242,6 +248,9 @@ public class AccountManagerTest {
         }
     }
     
+    /**
+     * Should disable account successfully
+     */
     @Test
     public void shouldDisableAccount_successfulBehaviour(){
         Account account = new Account();
