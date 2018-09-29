@@ -71,7 +71,7 @@ public class AccountManagerTest {
         savedAccount.setId(23);
         savedAccount.setName("New Account");
         savedAccount.setDescription("Any Description");
-        savedAccount.setParentId(1);
+        savedAccount.setParent(parentAccount);
         savedAccount.setIncreasedBy(AccountType.CREDIT);
         savedAccount.setBalance(BigDecimal.ZERO);
         
@@ -147,12 +147,16 @@ public class AccountManagerTest {
      */
     @Test
     public void shouldFindById_successfulBehaviour(){
+        
+        Account parentAccount = new Account();
+        parentAccount.setId(1);
+        
         Account storedAccount = new Account();
         storedAccount.setId(34);
         storedAccount.setName("Name of the account");
         storedAccount.setDescription("Description");
-        storedAccount.setParentId(4);
         storedAccount.setBalance(new BigDecimal("4000"));
+        storedAccount.setParent(parentAccount);
         
         when(accountRepository.findById(34)).thenReturn(Optional.of(storedAccount));
         
@@ -161,7 +165,6 @@ public class AccountManagerTest {
         assertThat(foundAccount.getId()).isEqualTo(34);
         assertThat(foundAccount.getName()).isEqualTo("Name of the account");
         assertThat(foundAccount.getDescription()).isEqualTo("Description");
-        assertThat(foundAccount.getParentId()).isEqualTo(4);
         assertThat(foundAccount.getBalance()).isEqualTo(new BigDecimal(4000));
     }
     

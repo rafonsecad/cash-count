@@ -54,7 +54,7 @@ public class AccountManager implements IAccountManager {
         accountEntity.setName(account.getName());
         accountEntity.setDescription(account.getDescription());
         accountEntity.setIncreasedBy(parentAccount.getIncreasedBy());
-        accountEntity.setParentId(parentAccount.getId());
+        accountEntity.setParent(parentAccount);
         accountEntity.setBalance(BigDecimal.ZERO);
         
         accountRepository.save(accountEntity);
@@ -77,7 +77,7 @@ public class AccountManager implements IAccountManager {
         accountDto.setId(account.getId());
         accountDto.setName(account.getName());
         accountDto.setDescription(account.getDescription());
-        accountDto.setParentId(account.getParentId());
+        accountDto.setParentId(account.getParent().getId());
         accountDto.setBalance(account.getBalance());
         return accountDto;
     }

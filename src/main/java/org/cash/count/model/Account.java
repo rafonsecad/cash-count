@@ -6,12 +6,20 @@
 package org.cash.count.model;
 
 import java.math.BigDecimal;
+import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import org.cash.count.constant.AccountType;
 
 /**
  *
  * @author rafael
  */
+@Entity
 public class Account {
     
     private int id;
@@ -19,9 +27,12 @@ public class Account {
     private String description;
     private BigDecimal balance;
     private AccountType increasedBy;
-    private int parentId;
     private boolean disabled;
+    private Account parent;
+    private List<Account> children;
 
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
     public int getId() {
         return id;
     }
@@ -62,19 +73,29 @@ public class Account {
         this.increasedBy = increasedBy;
     }
 
-    public int getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(int parentId) {
-        this.parentId = parentId;
-    }
-
     public boolean isDisabled() {
         return disabled;
     }
 
     public void setDisabled(boolean disabled) {
         this.disabled = disabled;
+    }
+
+    @ManyToOne
+    public Account getParent() {
+        return parent;
+    }
+
+    public void setParent(Account parent) {
+        this.parent = parent;
+    }
+
+    @OneToMany(mappedBy="parent")
+    public List<Account> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<Account> children) {
+        this.children = children;
     }
 }
