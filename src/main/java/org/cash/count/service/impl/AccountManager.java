@@ -79,6 +79,7 @@ public class AccountManager implements IAccountManager {
         accountDto.setDescription(account.getDescription());
         accountDto.setParentId(account.getParent().getId());
         accountDto.setBalance(account.getBalance());
+        accountDto.setDisabled(account.isDisabled());
         return accountDto;
     }
 

@@ -12,8 +12,10 @@ import org.cash.count.dto.AccountDto;
 import org.cash.count.model.Account;
 import org.cash.count.repository.AccountRepository;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
@@ -26,6 +28,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  */
 @RunWith(SpringRunner.class)
 @DataJpaTest
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AccountManagerIT {
     
     @Autowired
@@ -69,4 +72,29 @@ public class AccountManagerIT {
         assertThat(createdAccount.getName()).isEqualTo("New Account");
     }
     
+    /**
+     * Should disable an account
+     */
+    @Test
+    public void shouldDisableAnAccount(){
+        AccountCreationDto account = new AccountCreationDto();
+        account.setName("New Account");
+        account.setDescription("Any Description");
+        account.setParentId(3);
+        
+        Account parentAccount = new Account();
+        parentAccount.setId(3);
+        parentAccount.setName("Parent Account");
+        parentAccount.setIncreasedBy(AccountType.CREDIT);
+        entityManager.merge(parentAccount);
+        entityManager.flush();
+        
+        accountManager.create(account);
+        
+        accountManager.disable(4);
+        
+        AccountDto disabledAccount = accountManager.findById(4);
+        
+        assertThat(disabledAccount.isDisabled()).isEqualTo(true);
+    }
 }

@@ -7,12 +7,14 @@ package org.cash.count.model;
 
 import java.math.BigDecimal;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import org.cash.count.constant.AccountType;
 
 /**
@@ -20,6 +22,7 @@ import org.cash.count.constant.AccountType;
  * @author rafael
  */
 @Entity
+@Table(name="account")
 public class Account {
     
     private int id;
@@ -41,6 +44,7 @@ public class Account {
         this.id = id;
     }
 
+    @Column(name="name")
     public String getName() {
         return name;
     }
@@ -49,6 +53,7 @@ public class Account {
         this.name = name;
     }
 
+    @Column(name="description")
     public String getDescription() {
         return description;
     }
@@ -57,6 +62,7 @@ public class Account {
         this.description = description;
     }
     
+    @Column(name="balance")
     public BigDecimal getBalance() {
         return balance;
     }
@@ -65,6 +71,7 @@ public class Account {
         this.balance = balance;
     }
 
+    @Column(name="increased_by")
     public AccountType getIncreasedBy() {
         return increasedBy;
     }
@@ -73,6 +80,7 @@ public class Account {
         this.increasedBy = increasedBy;
     }
 
+    @Column(name="disabled")
     public boolean isDisabled() {
         return disabled;
     }

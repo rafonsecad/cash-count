@@ -18,6 +18,7 @@ public class AccountDto {
     private String description;
     private int parentId;
     private BigDecimal balance;
+    private boolean disabled;
 
     public int getId() {
         return id;
@@ -57,5 +58,13 @@ public class AccountDto {
 
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
+    }
+
+    public boolean isDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
     }
 }
