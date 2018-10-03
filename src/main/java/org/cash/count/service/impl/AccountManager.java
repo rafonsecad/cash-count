@@ -15,11 +15,13 @@ import org.cash.count.dto.NameValidator;
 import org.cash.count.model.Account;
 import org.cash.count.repository.AccountRepository;
 import org.cash.count.service.IAccountManager;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author rafael
  */
+@Service
 public class AccountManager implements IAccountManager {
     
     private final AccountRepository accountRepository;
