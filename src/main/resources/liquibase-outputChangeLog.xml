@@ -19,6 +19,7 @@
             <column name="balance" type="decimal(13,4)" />
             <column name="increased_by" type="varchar(6)" />
             <column name="disabled" type="tinyint" />
+            <column name="parent_id" type="int" />
         </createTable>
         <rollback>
             <dropTable tableName="account"/>
