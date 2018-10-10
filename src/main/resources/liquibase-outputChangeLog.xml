@@ -9,7 +9,7 @@
 
     <changeSet id="01" author="rafonsecad">
         <createTable tableName="account">
-            <column name="id" type="int">
+            <column name="id" type="int" autoIncrement="true">
                 <constraints nullable="false" unique="true" primaryKey="true" />
             </column>
             <column name="name" type="varchar(20)">
@@ -24,6 +24,16 @@
         <rollback>
             <dropTable tableName="account"/>
         </rollback>
+    </changeSet>
+    
+    <changeSet id="02" author="rafonsecad">
+        <insert tableName="account">
+            <column name="id" value="1"/>
+            <column name="name" value="Assets"/>
+            <column name="balance" value="0"/>
+            <column name="increased_by" value="DEBIT"/>
+            <column name="disabled" value="0"/>
+        </insert>
     </changeSet>
 </databaseChangeLog>
     
