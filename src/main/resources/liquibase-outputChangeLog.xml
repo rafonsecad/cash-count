@@ -28,8 +28,36 @@
     
     <changeSet id="02" author="rafonsecad">
         <insert tableName="account">
-            <column name="id" value="1"/>
+            <column name="id" value="10000"/>
             <column name="name" value="Assets"/>
+            <column name="balance" value="0"/>
+            <column name="increased_by" value="DEBIT"/>
+            <column name="disabled" value="0"/>
+        </insert>
+        <insert tableName="account">
+            <column name="id" value="20000"/>
+            <column name="name" value="Liabilities"/>
+            <column name="balance" value="0"/>
+            <column name="increased_by" value="CREDIT"/>
+            <column name="disabled" value="0"/>
+        </insert>
+        <insert tableName="account">
+            <column name="id" value="27000"/>
+            <column name="name" value="Equity"/>
+            <column name="balance" value="0"/>
+            <column name="increased_by" value="CREDIT"/>
+            <column name="disabled" value="0"/>
+        </insert>
+        <insert tableName="account">
+            <column name="id" value="30000"/>
+            <column name="name" value="Revenue"/>
+            <column name="balance" value="0"/>
+            <column name="increased_by" value="CREDIT"/>
+            <column name="disabled" value="0"/>
+        </insert>
+        <insert tableName="account">
+            <column name="id" value="40000"/>
+            <column name="name" value="Expenses"/>
             <column name="balance" value="0"/>
             <column name="increased_by" value="DEBIT"/>
             <column name="disabled" value="0"/>

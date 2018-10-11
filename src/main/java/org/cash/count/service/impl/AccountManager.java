@@ -6,6 +6,7 @@
 package org.cash.count.service.impl;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.cash.count.dto.AccountCreationDto;
@@ -23,6 +24,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class AccountManager implements IAccountManager {
+    
+    private int [] mainAccountIds = {10000, 20000, 27000, 30000, 40000};
     
     private final AccountRepository accountRepository;
     
@@ -111,6 +114,9 @@ public class AccountManager implements IAccountManager {
     public void disable(int accountId) {
         Optional<Account> wrappedAccount = accountRepository.findById(accountId);
         Account account = wrappedAccount.orElseThrow(NoSuchElementException::new);
+        if (isMainAccount(account.getId())){
+            throw new IllegalStateException("Main account cannot be disabled");
+        }
         if (hasAnyChildrenAccountEnabled(account)){
             throw new IllegalStateException("Children accounts enabled");
         }    
@@ -118,10 +124,13 @@ public class AccountManager implements IAccountManager {
         accountRepository.save(account);
     }
     
+    private boolean isMainAccount(int accountId){
+        return Arrays.stream(mainAccountIds)
+                .anyMatch(mainAccountId -> mainAccountId == accountId);
+    }
+    
     private boolean hasAnyChildrenAccountEnabled(Account account){
         return account.getChildren().stream()
-                .filter(a -> !a.isDisabled())
-                .findAny()
-                .isPresent();
+                .anyMatch(a -> !a.isDisabled());
     }
 }

@@ -340,4 +340,89 @@ public class AccountManagerTest {
             assertThat(e.getMessage()).isEqualTo("Children accounts enabled");
         }
     }
+    
+    @Test
+    public void shouldNotDisableAccount_assetsAccount() {
+        Account assets = new Account();
+        assets.setId(10000);
+        assets.setDisabled(false);
+        assets.setChildren(new ArrayList<>());
+        
+        when(accountRepository.findById(10000)).thenReturn(Optional.of(assets));
+        
+        try{
+            accountManager.disable(10000);
+            fail();
+        } catch(IllegalStateException e){
+            assertThat(e.getMessage()).isEqualTo("Main account cannot be disabled");
+        }
+    }
+    
+    @Test
+    public void shouldNotDisableAccount_liabilitiesAccount() {
+        Account assets = new Account();
+        assets.setId(20000);
+        assets.setDisabled(false);
+        assets.setChildren(new ArrayList<>());
+        
+        when(accountRepository.findById(20000)).thenReturn(Optional.of(assets));
+        
+        try{
+            accountManager.disable(20000);
+            fail();
+        } catch(IllegalStateException e){
+            assertThat(e.getMessage()).isEqualTo("Main account cannot be disabled");
+        }
+    }
+    
+    @Test
+    public void shouldNotDisableAccount_equityAccount() {
+        Account assets = new Account();
+        assets.setId(27000);
+        assets.setDisabled(false);
+        assets.setChildren(new ArrayList<>());
+        
+        when(accountRepository.findById(27000)).thenReturn(Optional.of(assets));
+        
+        try{
+            accountManager.disable(27000);
+            fail();
+        } catch(IllegalStateException e){
+            assertThat(e.getMessage()).isEqualTo("Main account cannot be disabled");
+        }
+    }
+    
+    @Test
+    public void shouldNotDisableAccount_revenueAccount() {
+        Account assets = new Account();
+        assets.setId(30000);
+        assets.setDisabled(false);
+        assets.setChildren(new ArrayList<>());
+        
+        when(accountRepository.findById(30000)).thenReturn(Optional.of(assets));
+        
+        try{
+            accountManager.disable(30000);
+            fail();
+        } catch(IllegalStateException e){
+            assertThat(e.getMessage()).isEqualTo("Main account cannot be disabled");
+        }
+    }
+    
+    @Test
+    public void shouldNotDisableAccount_expensesAccount() {
+        Account assets = new Account();
+        assets.setId(40000);
+        assets.setDisabled(false);
+        assets.setChildren(new ArrayList<>());
+        
+        when(accountRepository.findById(40000)).thenReturn(Optional.of(assets));
+        
+        try{
+            accountManager.disable(40000);
+            fail();
+        } catch(IllegalStateException e){
+            assertThat(e.getMessage()).isEqualTo("Main account cannot be disabled");
+        }
+    }
 }
