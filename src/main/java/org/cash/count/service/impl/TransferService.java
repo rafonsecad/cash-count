@@ -10,7 +10,9 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.cash.count.constant.AccountType;
 import org.cash.count.model.Account;
+import org.cash.count.model.Transaction;
 import org.cash.count.repository.AccountRepository;
+import org.cash.count.repository.TransactionRepository;
 import org.cash.count.service.ITransferService;
 
 /**
@@ -20,14 +22,16 @@ import org.cash.count.service.ITransferService;
 public class TransferService implements ITransferService{
 
     private AccountRepository accountRepository;
+    private TransactionRepository transactionRepository;
     
     /**
      * Public constructor
      * 
      * @param accountRepository the account repository dependency
      */
-    public TransferService(AccountRepository accountRepository){
+    public TransferService(AccountRepository accountRepository, TransactionRepository transactionRepository){
         this.accountRepository = accountRepository;
+        this.transactionRepository = transactionRepository;
     }
     
     /**
@@ -53,6 +57,12 @@ public class TransferService implements ITransferService{
         
         accountRepository.save(debitedAccount);
         accountRepository.save(creditedAccount);
+        
+        Transaction transaction = new Transaction(debitedAccount, 
+                                                  creditedAccount, 
+                                                  new BigDecimal(amount));
+        
+        transactionRepository.save(transaction);
     }
     
     private BigDecimal calculateDebitedBalance(Account debitedAccount, String amount){

@@ -12,7 +12,9 @@ import java.util.Optional;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import org.cash.count.constant.AccountType;
 import org.cash.count.model.Account;
+import org.cash.count.model.Transaction;
 import org.cash.count.repository.AccountRepository;
+import org.cash.count.repository.TransactionRepository;
 import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,15 +41,21 @@ public class TransferServiceTest {
     @Mock
     private AccountRepository accountRepository;
     
+    @Mock
+    private TransactionRepository transactionRepository;
+    
     @Captor
     private ArgumentCaptor<Account> accountCaptor;
+    
+    @Captor
+    private ArgumentCaptor<Transaction> transactionCaptor;
     
     /**
      * Initialize class.
      */
     @Before
     public void setUp(){
-        transferService = new TransferService(accountRepository);
+        transferService = new TransferService(accountRepository, transactionRepository);
     }
     
     /**
@@ -82,6 +90,7 @@ public class TransferServiceTest {
         transferService.transfer(1, 3, "10000");
         
         verify(accountRepository, times(2)).save(accountCaptor.capture());
+        verify(transactionRepository, times(1)).save(transactionCaptor.capture());
         
         List<Account> accountsCaptured = accountCaptor.getAllValues();
         Account debitedAccountCaptured = accountsCaptured.get(0);
@@ -94,6 +103,12 @@ public class TransferServiceTest {
         assertThat(creditedAccountCaptured).isNotNull();
         assertThat(creditedAccountCaptured.getIncreasedBy()).isEqualTo(resultingCreditAccount.getIncreasedBy());
         assertThat(creditedAccountCaptured.getBalance()).isEqualTo(resultingCreditAccount.getBalance());
+        
+        Transaction transaction = transactionCaptor.getValue();
+        
+        assertThat(transaction.getDebitAccount().getId()).isEqualTo(debitedAccountCaptured.getId());
+        assertThat(transaction.getCreditAccount().getId()).isEqualTo(creditedAccountCaptured.getId());
+        assertThat(transaction.getAmount()).isEqualTo(new BigDecimal("10000"));
     }
     
     /**
